@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html ng-app="store">
+<head lang="en">
+    <script type="text/javascript" src="angular.min.js"></script>
+     <script type="text/javascript" src="store-products.js"></script>
+    <script type="text/javascript" src="app.js"></script>
+    <link rel="stylesheet" href="bootstrap.css"/>
+    <link rel="stylesheet" href="bootstrap-theme.css">
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body ng-controller="StoreController as store">
+
+<p>
+<ul class="list-group"> 
+    <li class="list-group-item"
+        ng-repeat="product in store.products | orderBy:'name' ">  
+        <h3>
+            {{product.name | uppercase}}
+            <h3>
+                {{product.price | currency }}
+            </h3>
+        </h3>
+
+        <p>{{product.date | date:'MM/dd/yyyy'}}</p>
+
+        <p><img ng-src="{{product.img}}"></p>
+
+       //新增 一個 controller //新增一個 PanelController 來控制顯示寶石資訊細節的 table
+        <product-panels></product-panels>
+
+          <section>
+             <blockquote ng-repeat="review in product.reviews">
+                 <h3>
+                     <b>Stars: {{review.stars}}</b> 
+                     {{review.body}}  
+                     <cite>by: {{review.author}}</cite>
+                     <cite>Description:{{review.body}}</cite>
+                 </h3>
+             </blockquote>
+         </section>
+         <!-- 留言板-->
+        <!--新增 ReviewController-->
+        <!--novalidate 不須被驗證-->
+        <!--在form標籤中我們只需要取得$valid 驗證是否執行reviewCtrl.addReview(product)-->
+        <form name="reviewForm"
+              class="form-horizontal"
+              ng-controller="ReviewController as reviewCtrl"
+              ng-submit="reviewForm.$valid && reviewCtrl.addReview(product)"
+              novalidate
+                >
+            <div class="form-group">
+                <div class="controls">
+                    <blockquote>
+                        <b>Stars: {{ reviewCtrl.review.stars}}</b>
+                        {{ reviewCtrl.review.body}}
+                        <cite>by: {{ reviewCtrl.review.author}}</cite>
+                    </blockquote>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <section>
+                    <!--<label>stars:</label>-->
+                    <label class="control-label">Stars</label>
+
+                    <!-- required 需要被驗證-->
+                    <div class="controls">
+                        <select ng-model="reviewCtrl.review.stars" required>
+                            <option value="1">1 star</option>
+                            <option value="2">2 stars</option>
+                            <option value="3">3 stars</option>
+                            <option value="4">4 stars</option>
+                            <option value="5">5 stars</option>
+                        </select>
+                    </div>
+                </section>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Description</label>
+
+                <div class="controls">
+
+                    <!-- required 需要被驗證-->
+                    <textarea ng-model="reviewCtrl.review.body"
+                              placeholder="Typing Description…"
+                              required></textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Author</label>
+
+                <div class="controls">
+
+                    <!-- required 需要被驗證-->
+                    <input ng-model="reviewCtrl.review.author"
+                           type="email"
+                           placeholder="Typing email…"
+                           required/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="controls">
+
+                    //若 驗證失敗 則disabled
+                    <input type="submit"
+                           ng-disabled="!reviewForm.$valid"
+                           class="btn btn-primary"
+                           value="Submit"/> 
+                </div>
+            </div>
+        </form>
+    </li>
+     
+</ul>
+</p>
+</body>
+</html>
